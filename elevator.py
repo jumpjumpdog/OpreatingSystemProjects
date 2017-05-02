@@ -19,6 +19,9 @@ class elevator(threading.Thread):
         self.cur_layer = 1
         self.queue = myqueue()
 
+#线程函数
+#原理是每个电梯实时监测自己的status，并将状态实时显示到ui界面
+
 
     def run(self):
         while True:
@@ -28,11 +31,6 @@ class elevator(threading.Thread):
             if self.status == 'wait':
                 #print "thread%d is waiting"%(self.id)
                 self.ui.__getattribute__(cur_layer).setText('wait')
-            #如果电梯目前状态向上，那么电梯当前层数加1
-            #然后分为3中情况
-            # 第一种当前电梯内部没人，外部有人等待，则电梯将开向外部等待的乘客，当检测到到达欲乘乘客楼层，那么将乘客想的目的楼层加入in_queue
-            #第二种当前电梯内部有人，外部无人等待，则电梯继续沿原来方向前进，当检测到乘客到达目的楼层，将该乘客从in_queue中取出
-            #第三种当前电梯内部外部均有人，即对第一种和第二种情况均考虑了一遍
             elif self.status == 'up':
                 print self.id
                 self.ui.__getattribute__(cur_layer).setText('')

@@ -6,6 +6,8 @@
 #
 # WARNING! All changes made in this file will be lost!
 
+
+
 from PyQt4 import QtCore, QtGui
 from TenpLayer import TempLayer
 Temp_Layer = []
@@ -24,6 +26,7 @@ except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
 
+#创建ui
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
@@ -234,6 +237,8 @@ class Ui_MainWindow(object):
         self.down3.setText(_translate("MainWindow", "down", None))
         self.down2.setText(_translate("MainWindow", "down", None))
 
+#各个楼层的按钮的槽，当按钮被点击时，就会有一个当前等待乘客被添加到Temp_Layer
+#Temp_Layer存储了乘客的楼层信息以及上行还是下行信息
 class MyForm(QtGui.QWidget):
     def __init__(self,parent = None):
         QtGui.QWidget.__init__(self,parent)

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import threading
 
-
+#电梯内部乘客队列
 class myqueue(object):
     def __init__(self):
         self.mode = False

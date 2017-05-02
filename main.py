@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import sys
-from time  import sleep
 from threading import Thread
 from PyQt4 import QtGui
 from elevator import elevator
@@ -13,8 +12,14 @@ def init_elevator():
     elevator_threads = [elevator(x) for x in range(1,4)]
     return elevator_threads
 
-#选择调度的电梯
-#方向一致，相对位置一致
+#调度函数
+#调度的准则是在电梯运行方向和乘客所要去的方向一致，并且电梯接乘客是在顺路或者电梯本身闲置的情况下，否则乘客将继续等待
+#在对3部电梯遍历检测是否满足条件，得到所有满足条件的电梯之后，从中选择一部最近的电梯，将乘客分配给该电梯
+#例如 当电梯运行方向是向上，乘客的目标是向上运行，并且乘客当前所在楼层位于电梯的上侧，则该电梯
+#min：电梯与乘客之间的距离
+#Temp_Layer: 等待乘客列表
+#id  电梯id
+
 def select():
     while True:
         min = 100
@@ -37,22 +42,21 @@ def select():
 
             if id != -1:
                 if min != 0:
-                    elevator_threads[id - 1].queue.insert(passenger.cur_layer)
                     if elevator_threads[id - 1].status == 'wait':
                         if passenger.cur_layer == elevator_threads[id - 1].cur_layer:
                             elevator_threads[id - 1].status = 'wait'
-                        elevator_threads[id - 1].status = 'up' if passenger.cur_layer > elevator_threads[
-                            id - 1].cur_layer else 'down'
+                        elevator_threads[id - 1].status,elevator_threads[id-1].mode  = ('up',False) if passenger.cur_layer > elevator_threads[id - 1].cur_layer else ('down',True)
+                    elevator_threads[id - 1].queue.insert(passenger.cur_layer)
 
             if id == -1:
                 Temp_Layer.append(passenger)
 
 
-
+#选择线程，将存储在Temp_Layer中的等待乘客分发给各个电梯线程
 selectThread = Thread(target=select)
 selectThread.start()
 
-
+#创建PyQt app及app的UI界面，显示UI界面
 app = QtGui.QApplication(sys.argv)
 myform = MyForm()
 myform.show()
@@ -60,6 +64,7 @@ myform.show()
 
 elevator_threads = init_elevator()
 
+#将每个电梯线程都与组件关联，同时开启电梯线程
 for x in elevator_threads:
     x.ui = myform.ui
     x.start()
